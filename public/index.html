@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>nicho</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <h1>nicho</h1>
+      <p class="subtitle">Editor mínimo de emails en español.</p>
+
+      <label for="inputText">Texto</label>
+      <textarea
+        id="inputText"
+        placeholder="Pega aquí tu texto…"
+        rows="8"
+      ></textarea>
+
+      <div class="controls-row">
+        <div class="control-group">
+          <label for="subcontext">Tipo de email</label>
+          <select id="subcontext">
+            <option value="general">general</option>
+            <option value="solicitud">solicitud</option>
+            <option value="seguimiento">seguimiento</option>
+            <option value="negar">negar</option>
+            <option value="feedback">feedback</option>
+            <option value="reclamo">reclamo</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <label for="relation">Relación</label>
+          <select id="relation">
+            <option value="interno">interno</option>
+            <option value="externo">externo</option>
+          </select>
+        </div>
+      </div>
+
+      <button id="correctBtn" class="btn-primary" type="button">Corregir</button>
+      <p id="errorMessage" class="error" role="alert" aria-live="polite"></p>
+
+      <label for="outputText">Resultado</label>
+      <textarea id="outputText" rows="8" readonly></textarea>
+
+      <p id="readyMessage" class="ready" hidden>Listo. Puedes enviarlo.</p>
+      <button id="copyBtn" class="btn-secondary" type="button" disabled>Copiar</button>
+    </main>
+
+    <script src="/app.js" defer></script>
+  </body>
+</html>

@@ -9,33 +9,65 @@
   <body>
     <main class="app">
       <h1>nicho</h1>
-      <p class="subtitle">Editor mínimo de emails en español.</p>
+      <p class="subtitle">Editor profesional de mensajes en español.</p>
 
       <label for="inputText">Texto</label>
-      <textarea
-        id="inputText"
-        placeholder="Pega aquí tu texto…"
-        rows="8"
-      ></textarea>
+      <textarea id="inputText" placeholder="Pega aquí tu texto…" rows="8"></textarea>
 
-      <div class="controls-row">
+      <div class="controls-grid">
         <div class="control-group">
-          <label for="subcontext">Tipo de email</label>
-          <select id="subcontext">
-            <option value="general">general</option>
-            <option value="solicitud">solicitud</option>
-            <option value="seguimiento">seguimiento</option>
-            <option value="negar">negar</option>
-            <option value="feedback">feedback</option>
-            <option value="reclamo">reclamo</option>
+          <label for="rol">Rol profesional</label>
+          <select id="rol">
+            <option value="manager">manager</option>
+            <option value="colaborador">colaborador</option>
+            <option value="freelancer">freelancer</option>
+            <option value="ventas">ventas</option>
+            <option value="soporte">soporte</option>
+            <option value="rrhh">rrhh</option>
+            <option value="founder">founder</option>
           </select>
         </div>
 
         <div class="control-group">
-          <label for="relation">Relación</label>
-          <select id="relation">
+          <label for="tipoMensaje">Tipo de mensaje</label>
+          <select id="tipoMensaje">
+            <option value="solicitud">solicitud</option>
+            <option value="seguimiento">seguimiento</option>
+            <option value="reclamo_interno">reclamo_interno</option>
+            <option value="feedback">feedback</option>
+            <option value="decision_dificil">decision_dificil</option>
+            <option value="decir_no">decir_no</option>
+            <option value="aclaracion">aclaracion</option>
+            <option value="cierre">cierre</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <label for="relacionJerarquica">Relación jerárquica</label>
+          <select id="relacionJerarquica">
+            <option value="superior">superior</option>
+            <option value="par">par</option>
+            <option value="subordinado">subordinado</option>
+            <option value="cliente_externo">cliente_externo</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <label for="contexto">Contexto</label>
+          <select id="contexto">
             <option value="interno">interno</option>
             <option value="externo">externo</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <label for="objetivoEmocional">Objetivo del mensaje</label>
+          <select id="objetivoEmocional">
+            <option value="informar">informar</option>
+            <option value="tranquilizar">tranquilizar</option>
+            <option value="convencer">convencer</option>
+            <option value="corregir_sin_friccion">corregir_sin_friccion</option>
+            <option value="respetar">respetar</option>
           </select>
         </div>
       </div>
@@ -47,7 +79,6 @@
       <textarea id="outputText" rows="8" readonly></textarea>
 
       <p id="readyMessage" class="ready" hidden>Listo. Puedes enviarlo.</p>
-      <button id="copyBtn" class="btn-secondary" type="button" disabled>Copiar</button>
     </main>
 
     <script src="/app.js" defer></script>

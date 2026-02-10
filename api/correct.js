@@ -1,29 +1,65 @@
-const SUBCONTEXT_PROMPTS = {
-  general: "Email profesional general.",
-  solicitud: "Email profesional de solicitud. Respetuoso y claro.",
-  seguimiento: "Email profesional de seguimiento. Firme sin insistir.",
-  negar: "Email profesional para decir que no. Claro y respetuoso.",
-  feedback: "Email profesional de feedback. Constructivo.",
-  reclamo: "Email profesional de reclamo. Firme, no agresivo.",
+const ROLE_PROMPTS = {
+  manager: "Tono seguro, claro, con autoridad tranquila. No excesivamente cercano.",
+  colaborador: "Tono respetuoso, claro, sin sonar inseguro ni autoritario.",
+  freelancer: "Tono profesional, autónomo y confiable. Evitar subordinación excesiva.",
+  ventas: "Tono persuasivo, claro, no agresivo ni exagerado.",
+  soporte: "Tono paciente, claro, orientado a solución.",
+  rrhh: "Tono neutral, cuidadoso y respetuoso.",
+  founder: "Tono directo, estratégico y claro. Evitar informalidad.",
 };
 
-const RELATION_PROMPTS = {
-  interno: "Comunicación interna de trabajo. Tono directo, respetuoso.",
-  externo: "Comunicación profesional externa. Tono formal cuidadoso.",
+const MESSAGE_TYPE_PROMPTS = {
+  solicitud: "Respetuoso, claro, sin exigencia.",
+  seguimiento: "Firme y educado, sin presión.",
+  reclamo_interno: "Claro y directo, no confrontacional.",
+  feedback: "Constructivo, específico, sin juicio.",
+  decision_dificil: "Claro, empático, sin ambigüedad.",
+  decir_no: "Firme, respetuoso, sin justificar de más.",
+  aclaracion: "Preciso, neutral, orientado a corregir malentendidos.",
+  cierre: "Concreto, claro, confirmatorio.",
+};
+
+const HIERARCHY_PROMPTS = {
+  superior: "Respeto, claridad, evitar imperativos.",
+  par: "Equilibrio, naturalidad, claridad.",
+  subordinado: "Claridad, respeto, autoridad serena.",
+  cliente_externo: "Formalidad cuidada, orientación a relación.",
+};
+
+const CONTEXT_PROMPTS = {
+  interno: "Lenguaje directo, menos formalismo, claridad operativa.",
+  externo: "Lenguaje más formal, cuidado en el tono y estructura.",
+};
+
+const EMOTIONAL_GOAL_PROMPTS = {
+  informar: "Claridad, estructura, neutralidad.",
+  tranquilizar: "Lenguaje calmado, seguro, sin urgencia innecesaria.",
+  convencer: "Argumentación clara, sin exagerar.",
+  corregir_sin_friccion: "Suavizar fricción, evitar tono acusatorio.",
+  respetar: "Cuidado extremo del tono, evitar imposiciones.",
 };
 
 const BASE_EDITORIAL_PROMPT = `Eres un editor profesional nativo en español.
-Entrega UNA versión final lista para enviar.
-Corrige únicamente ortografía, gramática, puntuación y claridad mínima.
-Reglas absolutas:
-- NO cambiar el significado
-- NO agregar información
-- NO embellecer
-- NO hacer el texto más largo de lo necesario
-- Mantener la voz del autor
-- Español natural, profesional y humano
-- No explicar cambios
-- Entregar SOLO el texto final (sin comillas, sin listas, sin prefacios)`;
+
+Tu tarea es entregar UNA ÚNICA versión final del texto, lista para enviar.
+
+Corrige únicamente:
+
+* Ortografía
+* Gramática
+* Puntuación
+* Claridad mínima
+
+REGLAS ABSOLUTAS:
+
+* NO cambies el significado
+* NO agregues información
+* NO embellezcas
+* NO alargues innecesariamente el texto
+* Mantén la voz del autor
+* Español natural, profesional y humano
+* No expliques cambios
+* Entrega SOLO el texto final`;
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -31,7 +67,14 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { text, subcontext = "general", relation = "externo" } = req.body || {};
+  const {
+    text,
+    rol = "colaborador",
+    tipoMensaje = "solicitud",
+    relacionJerarquica = "par",
+    contexto = "interno",
+    objetivoEmocional = "informar",
+  } = req.body || {};
 
   if (!text || typeof text !== "string" || !text.trim()) {
     return res.status(400).json({ error: "No text provided" });
@@ -41,8 +84,12 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: "Missing NICHO env var" });
   }
 
-  const relationPrompt = RELATION_PROMPTS[relation] || RELATION_PROMPTS.externo;
-  const subcontextPrompt = SUBCONTEXT_PROMPTS[subcontext] || SUBCONTEXT_PROMPTS.general;
+  const rolePrompt = ROLE_PROMPTS[rol] || ROLE_PROMPTS.colaborador;
+  const messageTypePrompt = MESSAGE_TYPE_PROMPTS[tipoMensaje] || MESSAGE_TYPE_PROMPTS.solicitud;
+  const hierarchyPrompt = HIERARCHY_PROMPTS[relacionJerarquica] || HIERARCHY_PROMPTS.par;
+  const contextPrompt = CONTEXT_PROMPTS[contexto] || CONTEXT_PROMPTS.interno;
+  const emotionalGoalPrompt =
+    EMOTIONAL_GOAL_PROMPTS[objetivoEmocional] || EMOTIONAL_GOAL_PROMPTS.informar;
 
   try {
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -56,8 +103,11 @@ export default async function handler(req, res) {
         temperature: 0.2,
         messages: [
           { role: "system", content: BASE_EDITORIAL_PROMPT },
-          { role: "system", content: relationPrompt },
-          { role: "system", content: subcontextPrompt },
+          { role: "system", content: rolePrompt },
+          { role: "system", content: messageTypePrompt },
+          { role: "system", content: hierarchyPrompt },
+          { role: "system", content: contextPrompt },
+          { role: "system", content: emotionalGoalPrompt },
           { role: "user", content: text },
         ],
       }),
@@ -66,9 +116,7 @@ export default async function handler(req, res) {
     const data = await response.json();
 
     if (!response.ok) {
-      const openAiMessage =
-        data?.error?.message || "OpenAI request failed";
-      return res.status(502).json({ error: openAiMessage });
+      return res.status(502).json({ error: data?.error?.message || "OpenAI request failed" });
     }
 
     const output = data?.choices?.[0]?.message?.content?.trim();
@@ -78,7 +126,7 @@ export default async function handler(req, res) {
     }
 
     return res.status(200).json({ output });
-  } catch (error) {
+  } catch {
     return res.status(500).json({ error: "Internal server error" });
   }
 }

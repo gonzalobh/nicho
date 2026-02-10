@@ -1,8 +1,5 @@
 :root {
   color-scheme: light;
-  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, sans-serif;
-  background: #f5f5f7;
-  color: #1d1d1f;
 }
 
 * {
@@ -12,107 +9,22 @@
 body {
   margin: 0;
   min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   background: #f5f5f7;
+  color: #1d1d1f;
 }
 
-.container {
-  max-width: 840px;
+main {
+  max-width: 720px;
   margin: 0 auto;
   padding: 48px 20px;
 }
 
-.card {
-  background: #ffffff;
-  border: 1px solid #e7e7ea;
-  border-radius: 20px;
-  padding: 28px;
-  box-shadow: 0 6px 30px rgba(0, 0, 0, 0.04);
-}
-
 h1 {
+  margin: 0 0 8px;
+}
+
+p {
   margin: 0;
-  font-size: 32px;
-  font-weight: 650;
-  letter-spacing: -0.02em;
-}
-
-.subtitle {
-  margin: 8px 0 24px;
-  color: #6e6e73;
-}
-
-.form {
-  display: grid;
-  gap: 14px;
-}
-
-label {
-  font-size: 14px;
   color: #3a3a3c;
-}
-
-textarea,
-select,
-button {
-  width: 100%;
-  border-radius: 12px;
-  border: 1px solid #d2d2d7;
-  font-size: 15px;
-}
-
-textarea,
-select {
-  padding: 12px;
-  background: #fff;
-  color: #1d1d1f;
-}
-
-textarea {
-  resize: vertical;
-  line-height: 1.5;
-}
-
-.row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-}
-
-.field {
-  display: grid;
-  gap: 8px;
-}
-
-button {
-  background: #1d1d1f;
-  color: #fff;
-  padding: 12px 16px;
-  border: none;
-  cursor: pointer;
-  transition: opacity 0.2s ease;
-}
-
-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.ready {
-  margin: 4px 0 0;
-  font-size: 14px;
-  color: #34a853;
-}
-
-@media (max-width: 640px) {
-  .row {
-    grid-template-columns: 1fr;
-  }
-
-  .container {
-    padding: 24px 14px;
-  }
-
-  .card {
-    padding: 18px;
-  }
 }

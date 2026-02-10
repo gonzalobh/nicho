@@ -1,9 +1,11 @@
 const inputText = document.getElementById("inputText");
-const subcontext = document.getElementById("subcontext");
-const relation = document.getElementById("relation");
+const rol = document.getElementById("rol");
+const tipoMensaje = document.getElementById("tipoMensaje");
+const relacionJerarquica = document.getElementById("relacionJerarquica");
+const contexto = document.getElementById("contexto");
+const objetivoEmocional = document.getElementById("objetivoEmocional");
 const outputText = document.getElementById("outputText");
 const correctBtn = document.getElementById("correctBtn");
-const copyBtn = document.getElementById("copyBtn");
 const errorMessage = document.getElementById("errorMessage");
 const readyMessage = document.getElementById("readyMessage");
 
@@ -18,13 +20,12 @@ const showError = (message) => {
 
 const updateOutput = (text) => {
   outputText.value = text;
-  const hasOutput = Boolean(text.trim());
-  readyMessage.hidden = !hasOutput;
-  copyBtn.disabled = !hasOutput;
+  readyMessage.hidden = !Boolean(text.trim());
 };
 
 correctBtn.addEventListener("click", async () => {
   const text = inputText.value.trim();
+
   if (!text) {
     showError("Ingresa texto para corregir.");
     updateOutput("");
@@ -42,8 +43,11 @@ correctBtn.addEventListener("click", async () => {
       },
       body: JSON.stringify({
         text,
-        subcontext: subcontext.value,
-        relation: relation.value,
+        rol: rol.value,
+        tipoMensaje: tipoMensaje.value,
+        relacionJerarquica: relacionJerarquica.value,
+        contexto: contexto.value,
+        objetivoEmocional: objetivoEmocional.value,
       }),
     });
 
@@ -59,21 +63,5 @@ correctBtn.addEventListener("click", async () => {
     showError(error.message || "Ocurrió un error inesperado.");
   } finally {
     setLoading(false);
-  }
-});
-
-copyBtn.addEventListener("click", async () => {
-  if (!outputText.value.trim()) return;
-
-  try {
-    await navigator.clipboard.writeText(outputText.value);
-    showError("Texto copiado.");
-    setTimeout(() => {
-      if (errorMessage.textContent === "Texto copiado.") {
-        showError("");
-      }
-    }, 1300);
-  } catch (error) {
-    showError("No se pudo copiar automáticamente.");
   }
 });
